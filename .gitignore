@@ -1,0 +1,6 @@
+.env
+__pycache__/
+media/
+*.xlsx
+*.db
+venv/
