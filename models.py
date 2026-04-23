@@ -26,7 +26,7 @@ class Expense(Base):
   category=Column(String(100))
   description=Column(String(255))
   date=Column(Date)
-  image = Column(String(255), nullable=True)   # image path/store
+  image = Column(String(255), nullable=True)  
 
   user_id=Column(Integer,ForeignKey("users.id"))
   owner=relationship("User",back_populates="expenses")

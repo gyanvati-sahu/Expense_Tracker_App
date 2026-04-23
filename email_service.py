@@ -40,19 +40,7 @@ async def send_otp_email(email: str, otp: str):
 
 
 
-# async def send_expense_email(email: str, subject: str, body: str):
-#     message = MessageSchema(
-#         subject=subject,
-#         recipients=[email],
-#         body=body,
-#         subtype="html"   # 🔥 IMPORTANT FIX (not plain)
-#     )
 
-#     await fm.send_message(message)
-
-# ================= EXPENSE EMAIL (FIXED VERSION) =================
-# ================= EXPENSE EMAIL (FINAL) =================
-# ================= EXPENSE EMAIL =================
 SENDER_EMAIL = "gyansahu202@gmail.com"
 SENDER_PASSWORD = "yjhszcqkstgekmkx"
 
@@ -117,5 +105,3 @@ async def send_expense_email(email, subject, body, image_attachments=None, excel
 
     except Exception as e:
         print("❌ EMAIL SEND ERROR:", e)
-
-

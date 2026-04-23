@@ -1,34 +1,23 @@
   
 from dependencies import get_db
 from passlib.context import CryptContext
-
 from fastapi import Depends,HTTPException
 from sqlalchemy.orm import Session
 from models import User
 from jose import jwt,JWTError
 from datetime import datetime,timedelta
-
 from config import SECRET_KEY,ALGORITHM,ACCESS_TOKEN_EXPIRE_MINUTES,REFRESH_TOKEN_EXPIRE_DAYS
-
-
-# SECRET_KEY="mysecretkey"
-# ALGORITHM="HS256"
-
-# oauth2_scheme=OAuth2PasswordBearer(tokenUrl="/login")
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 security = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# ✅ FIXED
-
-
-
+#hash password
 def hash_password(password: str):
-    password = password.strip()[:72]   # ✅ trim + limit
+    password = password.strip()[:72]   
     return pwd_context.hash(password)
 
-
+#verify password
 def verify_password(plain, hashed):
     return pwd_context.verify(plain.strip()[:72], hashed)
 
@@ -59,14 +48,11 @@ def create_refresh_token(data:dict):
     
 
  
-
-
-
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ):
-    token = credentials.credentials   # ✅ extract token
+    token = credentials.credentials  
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

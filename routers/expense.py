@@ -1,6 +1,5 @@
 from fastapi import APIRouter,Depends,HTTPException,UploadFile,File,Form,HTTPException
 from sqlalchemy.orm import Session
-
 from models import Expense,User
 from schemas import ExpenseCreate,ExpenseUpdate,ExpenseResponse
 from dependencies import get_db
@@ -9,34 +8,15 @@ from fastapi import UploadFile, File
 import shutil
 import os
 import uuid
+import os
 
 router=APIRouter()
 
-# @router.post("/create")
-# def create_expense(
-#     expense: ExpenseCreate,
-#     db: Session = Depends(get_db),
-#     current_user=Depends(get_current_user)
-# ):
-#     new_expense = Expense(
-#         title=expense.title,
-#         amount=expense.amount,
-#         type=expense.type,
-#         category=expense.category,
-#         description=expense.description,
-#         date=expense.date,
-#         images=expense.image,
-#         user_id=current_user.id
-#     )
 
-#     db.add(new_expense)
-#     db.commit()
-#     db.refresh(new_expense)
-
-#     return new_expense
 UPLOAD_DIR = "media"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+#create expense
 @router.post("/create")
 def create_expense(
     title: str = Form(...),
@@ -45,7 +25,7 @@ def create_expense(
     category: str = Form(...),
     description: str = Form(...),
     date: str = Form(...),
-    file: UploadFile = File(...),   # ✅ image allowed
+    file: UploadFile = File(...),   
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
@@ -66,7 +46,7 @@ def create_expense(
         category=category,
         description=description,
         date=date,
-        image=file_path,   # ✅ image stored
+        image=file_path,   
         user_id=current_user.id
     )
 
@@ -76,8 +56,8 @@ def create_expense(
 
     return new_expense
 
-#get
 
+#get expenses
 @router.get("/read")
 def read_expenses(db:Session=Depends(get_db),
                   user:User=Depends(get_current_user)):
@@ -94,7 +74,7 @@ def update_expense(
     category: str = Form(...),
     description: str = Form(...),
     date: str = Form(...),
-    file: UploadFile = File(None),   # ✅ optional image
+    file: UploadFile = File(None),  
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
@@ -130,9 +110,7 @@ def update_expense(
     return data
 
 
-# ➤ DELETE EXPENSE
-import os
-
+# DELETE EXPENSE
 @router.delete("/{id}")
 def delete_expense(id: int,
                    db: Session = Depends(get_db),
@@ -146,7 +124,7 @@ def delete_expense(id: int,
     if not data:
         raise HTTPException(status_code=404, detail="Not found")
 
-    # ✅ delete image from folder
+    
     if data.image and os.path.exists(data.image):
         os.remove(data.image)
 
@@ -157,7 +135,7 @@ def delete_expense(id: int,
 
     
 
-#get single daata read
+#get single data read
 @router.get("/read_single/{id}")
 def get_expense(id: int,
                 db: Session = Depends(get_db),
@@ -209,7 +187,7 @@ def patch_expense(
     if date:
         data.date = date
 
-    # ✅ image optional patch
+    
     if file:
         file_name = f"{uuid.uuid4()}_{file.filename}"
         file_path = os.path.join(UPLOAD_DIR, file_name)
